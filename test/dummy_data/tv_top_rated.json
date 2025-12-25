@@ -1,0 +1,17 @@
+{
+  "results": [
+    {
+      "backdrop_path": "/backdropPath.jpg",
+      "genre_ids": [1, 2, 3],
+      "id": 1,
+      "original_name": "Top Rated Name",
+      "overview": "Top Rated Overview",
+      "popularity": 5.0,
+      "poster_path": "/posterPath.jpg",
+      "first_air_date": "2024-01-01",
+      "name": "Top Rated Name",
+      "vote_average": 9.5,
+      "vote_count": 500
+    }
+  ]
+}

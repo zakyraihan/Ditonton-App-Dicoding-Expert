@@ -1,0 +1,45 @@
+import 'package:equatable/equatable.dart';
+import 'package:ditonton/domain/entities/tv_series_detail.dart';
+
+abstract class TvSeriesDetailEvent extends Equatable {
+  const TvSeriesDetailEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class FetchTvSeriesDetail extends TvSeriesDetailEvent {
+  final int id;
+
+  FetchTvSeriesDetail(this.id);
+
+  @override
+  List<Object> get props => [id];
+}
+
+class AddToWatchlist extends TvSeriesDetailEvent {
+  final TvSeriesDetail tvSeriesDetail;
+
+  AddToWatchlist(this.tvSeriesDetail);
+
+  @override
+  List<Object> get props => [tvSeriesDetail];
+}
+
+class RemoveFromWatchlist extends TvSeriesDetailEvent {
+  final TvSeriesDetail tvSeriesDetail;
+
+  RemoveFromWatchlist(this.tvSeriesDetail);
+
+  @override
+  List<Object> get props => [tvSeriesDetail];
+}
+
+class LoadWatchlistStatus extends TvSeriesDetailEvent {
+  final int id;
+
+  LoadWatchlistStatus(this.id);
+
+  @override
+  List<Object> get props => [id];
+}

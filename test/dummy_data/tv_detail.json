@@ -1,0 +1,14 @@
+{
+  "backdrop_path": "/path.jpg",
+  "episode_run_time": [60],
+  "first_air_date": "2024-01-01",
+  "genres": [{ "id": 1, "name": "Action" }],
+  "id": 1,
+  "name": "Name",
+  "number_of_episodes": 10,
+  "number_of_seasons": 1,
+  "overview": "Overview",
+  "poster_path": "/path.jpg",
+  "vote_average": 1.0,
+  "vote_count": 1
+}
