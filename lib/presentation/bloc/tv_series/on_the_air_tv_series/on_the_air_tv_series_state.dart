@@ -15,7 +15,7 @@ class OnTheAirTvSeriesLoading extends OnTheAirTvSeriesState {}
 class OnTheAirTvSeriesError extends OnTheAirTvSeriesState {
   final String message;
 
-  OnTheAirTvSeriesError(this.message);
+  const OnTheAirTvSeriesError(this.message);
 
   @override
   List<Object> get props => [message];
@@ -24,7 +24,7 @@ class OnTheAirTvSeriesError extends OnTheAirTvSeriesState {
 class OnTheAirTvSeriesHasData extends OnTheAirTvSeriesState {
   final List<TvSeries> result;
 
-  OnTheAirTvSeriesHasData(this.result);
+  const OnTheAirTvSeriesHasData(this.result);
 
   @override
   List<Object> get props => [result];

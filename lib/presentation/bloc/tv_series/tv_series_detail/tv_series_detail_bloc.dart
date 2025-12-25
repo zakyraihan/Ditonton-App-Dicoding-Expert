@@ -21,7 +21,7 @@ class TvSeriesDetailBloc
     required this.getWatchListStatus,
     required this.saveWatchlist,
     required this.removeWatchlist,
-  }) : super(TvSeriesDetailState()) {
+  }) : super(const TvSeriesDetailState()) {
     on<FetchTvSeriesDetail>(_onFetchTvSeriesDetail);
     on<AddToWatchlist>(_onAddToWatchlist);
     on<RemoveFromWatchlist>(_onRemoveFromWatchlist);

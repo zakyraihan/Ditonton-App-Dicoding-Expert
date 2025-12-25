@@ -15,7 +15,7 @@ class TvSeriesSearchLoading extends TvSeriesSearchState {}
 class TvSeriesSearchError extends TvSeriesSearchState {
   final String message;
 
-  TvSeriesSearchError(this.message);
+  const TvSeriesSearchError(this.message);
 
   @override
   List<Object> get props => [message];
@@ -24,7 +24,7 @@ class TvSeriesSearchError extends TvSeriesSearchState {
 class TvSeriesSearchHasData extends TvSeriesSearchState {
   final List<TvSeries> result;
 
-  TvSeriesSearchHasData(this.result);
+  const TvSeriesSearchHasData(this.result);
 
   @override
   List<Object> get props => [result];

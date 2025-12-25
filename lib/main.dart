@@ -38,10 +38,12 @@ void main() async {
   GoogleFonts.config.allowRuntimeFetching = true;
   await SslPinningClient.init();
   di.init();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -74,31 +76,31 @@ class MyApp extends StatelessWidget {
           textTheme: kTextTheme,
           drawerTheme: kDrawerTheme,
         ),
-        home: HomeMoviePage(),
+        home: const HomeMoviePage(),
         navigatorObservers: [routeObserver],
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {
             case '/home':
-              return MaterialPageRoute(builder: (_) => HomeMoviePage());
-            case PopularMoviesPage.ROUTE_NAME:
-              return CupertinoPageRoute(builder: (_) => PopularMoviesPage());
-            case TopRatedMoviesPage.ROUTE_NAME:
-              return CupertinoPageRoute(builder: (_) => TopRatedMoviesPage());
-            case MovieDetailPage.ROUTE_NAME:
+              return MaterialPageRoute(builder: (_) => const HomeMoviePage());
+            case PopularMoviesPage.routeName:
+              return CupertinoPageRoute(builder: (_) => const PopularMoviesPage());
+            case TopRatedMoviesPage.routeName:
+              return CupertinoPageRoute(builder: (_) => const TopRatedMoviesPage());
+            case MovieDetailPage.routeName:
               final id = settings.arguments as int;
               return MaterialPageRoute(
                 builder: (_) => MovieDetailPage(id: id),
                 settings: settings,
               );
-            case SearchPage.ROUTE_NAME:
-              return CupertinoPageRoute(builder: (_) => SearchPage());
-            case WatchlistMoviesPage.ROUTE_NAME:
-              return MaterialPageRoute(builder: (_) => WatchlistMoviesPage());
-            case AboutPage.ROUTE_NAME:
-              return MaterialPageRoute(builder: (_) => AboutPage());
+            case SearchPage.routeName:
+              return CupertinoPageRoute(builder: (_) => const SearchPage());
+            case WatchlistMoviesPage.routeName:
+              return MaterialPageRoute(builder: (_) => const WatchlistMoviesPage());
+            case AboutPage.routeName:
+              return MaterialPageRoute(builder: (_) => const AboutPage());
 
           // TV Series Routes
-            case TvSeriesPage.ROUTE_NAME:
+            case TvSeriesPage.routeName:
               return MaterialPageRoute(
                 builder: (_) => MultiBlocProvider(
                   providers: [
@@ -112,24 +114,24 @@ class MyApp extends StatelessWidget {
                       create: (_) => di.locator<TopRatedTvSeriesBloc>(),
                     ),
                   ],
-                  child: TvSeriesPage(),
+                  child: const TvSeriesPage(),
                 ),
               );
-            case PopularTvSeriesPage.ROUTE_NAME:
+            case PopularTvSeriesPage.routeName:
               return CupertinoPageRoute(
                 builder: (_) => BlocProvider(
                   create: (_) => di.locator<PopularTvSeriesBloc>(),
-                  child: PopularTvSeriesPage(),
+                  child: const PopularTvSeriesPage(),
                 ),
               );
-            case TopRatedTvSeriesPage.ROUTE_NAME:
+            case TopRatedTvSeriesPage.routeName:
               return CupertinoPageRoute(
                 builder: (_) => BlocProvider(
                   create: (_) => di.locator<TopRatedTvSeriesBloc>(),
-                  child: TopRatedTvSeriesPage(),
+                  child: const TopRatedTvSeriesPage(),
                 ),
               );
-            case TvSeriesDetailPage.ROUTE_NAME:
+            case TvSeriesDetailPage.routeName:
               final id = settings.arguments as int;
               return MaterialPageRoute(
                 builder: (_) => BlocProvider(
@@ -138,24 +140,24 @@ class MyApp extends StatelessWidget {
                 ),
                 settings: settings,
               );
-            case SearchTvSeriesPage.ROUTE_NAME:
+            case SearchTvSeriesPage.routeName:
               return CupertinoPageRoute(
                 builder: (_) => BlocProvider(
                   create: (_) => di.locator<TvSeriesSearchBloc>(),
-                  child: SearchTvSeriesPage(),
+                  child: const SearchTvSeriesPage(),
                 ),
               );
-            case WatchlistTvSeriesPage.ROUTE_NAME:
+            case WatchlistTvSeriesPage.routeName:
               return MaterialPageRoute(
                 builder: (_) => BlocProvider(
                   create: (_) => di.locator<WatchlistTvSeriesBloc>(),
-                  child: WatchlistTvSeriesPage(),
+                  child: const WatchlistTvSeriesPage(),
                 ),
               );
 
             default:
               return MaterialPageRoute(builder: (_) {
-                return Scaffold(
+                return const Scaffold(
                   body: Center(
                     child: Text('Page not found :('),
                   ),

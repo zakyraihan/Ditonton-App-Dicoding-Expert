@@ -10,7 +10,7 @@ class TvSeriesDetailState extends Equatable {
   final bool isAddedToWatchlist;
   final String watchlistMessage;
 
-  TvSeriesDetailState({
+  const TvSeriesDetailState({
     this.tvSeriesDetail,
     this.recommendations = const [],
     this.isLoading = false,

@@ -3,14 +3,14 @@ import 'package:ditonton/domain/entities/tv_series.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final tTvSeriesTable = TvSeriesTable(
+  const tTvSeriesTable = TvSeriesTable(
     id: 1,
     name: 'name',
     posterPath: 'posterPath',
     overview: 'overview',
   );
 
-  final tTvSeriesWatchlist = TvSeries.watchlist(
+  const tTvSeriesWatchlist = TvSeries.watchlist(
     id: 1,
     name: 'name',
     posterPath: 'posterPath',

@@ -15,7 +15,7 @@ class PopularTvSeriesLoading extends PopularTvSeriesState {}
 class PopularTvSeriesError extends PopularTvSeriesState {
   final String message;
 
-  PopularTvSeriesError(this.message);
+  const PopularTvSeriesError(this.message);
 
   @override
   List<Object> get props => [message];
@@ -24,7 +24,7 @@ class PopularTvSeriesError extends PopularTvSeriesState {
 class PopularTvSeriesHasData extends PopularTvSeriesState {
   final List<TvSeries> result;
 
-  PopularTvSeriesHasData(this.result);
+  const PopularTvSeriesHasData(this.result);
 
   @override
   List<Object> get props => [result];

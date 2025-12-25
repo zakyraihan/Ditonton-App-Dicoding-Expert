@@ -26,7 +26,7 @@ void main() {
     );
   });
 
-  final tTvModel = TvSeriesModel(
+  const tTvModel = TvSeriesModel(
     backdropPath: 'backdropPath',
     genreIds: [1, 2, 3],
     id: 1,
@@ -40,7 +40,7 @@ void main() {
     voteCount: 1,
   );
 
-  final tTvSeries = TvSeries(
+  const tTvSeries = TvSeries(
     backdropPath: 'backdropPath',
     genreIds: [1, 2, 3],
     id: 1,
@@ -80,13 +80,13 @@ void main() {
           final result = await repository.getOnTheAirTvSeries();
           // assert
           verify(mockRemoteDataSource.getOnTheAirTvSeries());
-          expect(result, equals(Left(ServerFailure(''))));
+          expect(result, equals(const Left(ServerFailure(''))));
         });
   });
 
   group('Get TV Series Detail', () {
-    final tId = 1;
-    final tTvResponse = TvSeriesDetailResponse(
+    const tId = 1;
+    const tTvResponse = TvSeriesDetailResponse(
       backdropPath: 'backdropPath',
       episodeRunTime: [60],
       firstAirDate: '2024-01-01',
@@ -110,7 +110,7 @@ void main() {
           final result = await repository.getTvSeriesDetail(tId);
           // assert
           verify(mockRemoteDataSource.getTvSeriesDetail(tId));
-          expect(result, equals(Right(testTvSeriesDetail)));
+          expect(result, equals(const Right(testTvSeriesDetail)));
         });
   });
 
@@ -122,7 +122,7 @@ void main() {
       // act
       final result = await repository.saveWatchlist(testTvSeriesDetail);
       // assert
-      expect(result, Right('Added to Watchlist'));
+      expect(result, const Right('Added to Watchlist'));
     });
   });
 
@@ -134,14 +134,14 @@ void main() {
       // act
       final result = await repository.removeWatchlist(testTvSeriesDetail);
       // assert
-      expect(result, Right('Removed from watchlist'));
+      expect(result, const Right('Removed from watchlist'));
     });
   });
 
   group('get watchlist status', () {
     test('should return watch status whether data is found', () async {
       // arrange
-      final tId = 1;
+      const tId = 1;
       when(mockLocalDataSource.getTvSeriesById(tId))
           .thenAnswer((_) async => null);
       // act

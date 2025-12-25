@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WatchlistTvSeriesPage extends StatefulWidget {
-  static const ROUTE_NAME = '/watchlist-tv-series';
+  static const routeName = '/watchlist-tv-series';
+
+  const WatchlistTvSeriesPage({super.key});
 
   @override
   _WatchlistTvSeriesPageState createState() => _WatchlistTvSeriesPageState();
@@ -28,6 +30,7 @@ class _WatchlistTvSeriesPageState extends State<WatchlistTvSeriesPage>
     routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
+  @override
   void didPopNext() {
     context.read<WatchlistTvSeriesBloc>().add(FetchWatchlistTvSeries());
   }
@@ -36,14 +39,14 @@ class _WatchlistTvSeriesPageState extends State<WatchlistTvSeriesPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Watchlist TV Series'),
+        title: const Text('Watchlist TV Series'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<WatchlistTvSeriesBloc, WatchlistTvSeriesState>(
           builder: (context, state) {
             if (state is WatchlistTvSeriesLoading) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             } else if (state is WatchlistTvSeriesHasData) {
@@ -56,11 +59,11 @@ class _WatchlistTvSeriesPageState extends State<WatchlistTvSeriesPage>
               );
             } else if (state is WatchlistTvSeriesError) {
               return Center(
-                key: Key('error_message'),
+                key: const Key('error_message'),
                 child: Text(state.message),
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text('No watchlist yet'),
               );
             }

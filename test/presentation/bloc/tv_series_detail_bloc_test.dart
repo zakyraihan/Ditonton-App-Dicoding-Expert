@@ -49,7 +49,7 @@ void main() {
   const tId = 1;
 
   test('initial state should be empty', () {
-    expect(bloc.state, TvSeriesDetailState());
+    expect(bloc.state, const TvSeriesDetailState());
   });
 
   group('Get Tv Series Detail', () {
@@ -57,15 +57,15 @@ void main() {
       'should emit [Loading, Loaded] when data is gotten successfully',
       build: () {
         when(mockGetTvSeriesDetail.execute(tId))
-            .thenAnswer((_) async => Right(testTvSeriesDetail));
+            .thenAnswer((_) async => const Right(testTvSeriesDetail));
         when(mockGetTvSeriesRecommendations.execute(tId))
             .thenAnswer((_) async => Right(testTvSeriesList));
         return bloc;
       },
-      act: (bloc) => bloc.add(FetchTvSeriesDetail(tId)),
+      act: (bloc) => bloc.add(const FetchTvSeriesDetail(tId)),
       expect: () => [
-        TvSeriesDetailState().copyWith(isLoading: true),
-        TvSeriesDetailState().copyWith(
+        const TvSeriesDetailState().copyWith(isLoading: true),
+        const TvSeriesDetailState().copyWith(
           isLoading: false,
           tvSeriesDetail: testTvSeriesDetail,
           recommendations: testTvSeriesList,
@@ -81,15 +81,15 @@ void main() {
       'should emit [Loading, Error] when get detail is unsuccessful',
       build: () {
         when(mockGetTvSeriesDetail.execute(tId))
-            .thenAnswer((_) async => Left(ServerFailure('Server Failure')));
+            .thenAnswer((_) async => const Left(ServerFailure('Server Failure')));
         when(mockGetTvSeriesRecommendations.execute(tId))
             .thenAnswer((_) async => Right(testTvSeriesList));
         return bloc;
       },
-      act: (bloc) => bloc.add(FetchTvSeriesDetail(tId)),
+      act: (bloc) => bloc.add(const FetchTvSeriesDetail(tId)),
       expect: () => [
-        TvSeriesDetailState().copyWith(isLoading: true),
-        TvSeriesDetailState().copyWith(
+        const TvSeriesDetailState().copyWith(isLoading: true),
+        const TvSeriesDetailState().copyWith(
           isLoading: false,
           message: 'Server Failure',
         ),
@@ -107,11 +107,11 @@ void main() {
             .thenAnswer((_) async => true);
         return bloc;
       },
-      act: (bloc) => bloc.add(AddToWatchlist(testTvSeriesDetail)),
+      act: (bloc) => bloc.add(const AddToWatchlist(testTvSeriesDetail)),
       expect: () => [
-        TvSeriesDetailState().copyWith(watchlistMessage: 'Added to Watchlist'),
-        TvSeriesDetailState().copyWith(watchlistMessage: ''),
-        TvSeriesDetailState().copyWith(watchlistMessage: '', isAddedToWatchlist: true),
+        const TvSeriesDetailState().copyWith(watchlistMessage: 'Added to Watchlist'),
+        const TvSeriesDetailState().copyWith(watchlistMessage: ''),
+        const TvSeriesDetailState().copyWith(watchlistMessage: '', isAddedToWatchlist: true),
       ],
     );
 
@@ -124,10 +124,10 @@ void main() {
             .thenAnswer((_) async => false);
         return bloc;
       },
-      act: (bloc) => bloc.add(RemoveFromWatchlist(testTvSeriesDetail)),
+      act: (bloc) => bloc.add(const RemoveFromWatchlist(testTvSeriesDetail)),
       expect: () => [
-        TvSeriesDetailState().copyWith(watchlistMessage: 'Removed from Watchlist'),
-        TvSeriesDetailState().copyWith(watchlistMessage: ''),
+        const TvSeriesDetailState().copyWith(watchlistMessage: 'Removed from Watchlist'),
+        const TvSeriesDetailState().copyWith(watchlistMessage: ''),
       ],
     );
   });

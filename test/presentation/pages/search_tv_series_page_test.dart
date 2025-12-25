@@ -18,7 +18,7 @@ void main() {
     mockBloc = MockTvSeriesSearchBloc();
   });
 
-  Widget _makeTestableWidget(Widget body) {
+  Widget makeTestableWidget(Widget body) {
     return BlocProvider<TvSeriesSearchBloc>.value(
       value: mockBloc,
       child: MaterialApp(home: body),
@@ -29,16 +29,16 @@ void main() {
           (WidgetTester tester) async {
         when(() => mockBloc.state).thenReturn(TvSeriesSearchLoading());
 
-        await tester.pumpWidget(_makeTestableWidget(SearchTvSeriesPage()));
+        await tester.pumpWidget(makeTestableWidget(const SearchTvSeriesPage()));
 
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
       });
 
   testWidgets('Page should display data when state is HasData',
           (WidgetTester tester) async {
-        when(() => mockBloc.state).thenReturn(TvSeriesSearchHasData([]));
+        when(() => mockBloc.state).thenReturn(const TvSeriesSearchHasData([]));
 
-        await tester.pumpWidget(_makeTestableWidget(SearchTvSeriesPage()));
+        await tester.pumpWidget(makeTestableWidget(const SearchTvSeriesPage()));
 
         expect(find.byType(ListView), findsOneWidget);
       });

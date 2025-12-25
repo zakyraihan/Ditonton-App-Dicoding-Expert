@@ -21,7 +21,7 @@ void main() {
   });
 
   // Helper untuk membungkus widget dengan Provider yang dibutuhkan
-  Widget _makeTestableWidget(Widget body) {
+  Widget makeTestableWidget(Widget body) {
     return BlocProvider<TvSeriesDetailBloc>.value(
       value: mockBloc,
       child: MaterialApp(
@@ -32,10 +32,10 @@ void main() {
 
   testWidgets('Page should display progress bar when loading', (WidgetTester tester) async {
     // Arrange
-    when(() => mockBloc.state).thenReturn(TvSeriesDetailState(isLoading: true));
+    when(() => mockBloc.state).thenReturn(const TvSeriesDetailState(isLoading: true));
 
     // Act
-    await tester.pumpWidget(_makeTestableWidget(TvSeriesDetailPage(id: 1)));
+    await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
 
     // Assert
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -44,7 +44,7 @@ void main() {
   testWidgets('Watchlist button should display add icon when TV series is not added to watchlist',
           (WidgetTester tester) async {
         // Arrange
-        when(() => mockBloc.state).thenReturn(TvSeriesDetailState(
+        when(() => mockBloc.state).thenReturn(const TvSeriesDetailState(
           isLoading: false,
           tvSeriesDetail: testTvSeriesDetail,
           recommendations: [],
@@ -52,7 +52,7 @@ void main() {
         ));
 
         // Act
-        await tester.pumpWidget(_makeTestableWidget(TvSeriesDetailPage(id: 1)));
+        await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
 
         // Assert
         expect(find.byIcon(Icons.add), findsOneWidget);
@@ -61,7 +61,7 @@ void main() {
   testWidgets('Watchlist button should display check icon when TV series is added to watchlist',
           (WidgetTester tester) async {
         // Arrange
-        when(() => mockBloc.state).thenReturn(TvSeriesDetailState(
+        when(() => mockBloc.state).thenReturn(const TvSeriesDetailState(
           isLoading: false,
           tvSeriesDetail: testTvSeriesDetail,
           recommendations: [],
@@ -69,7 +69,7 @@ void main() {
         ));
 
         // Act
-        await tester.pumpWidget(_makeTestableWidget(TvSeriesDetailPage(id: 1)));
+        await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
 
         // Assert
         expect(find.byIcon(Icons.check), findsOneWidget);
@@ -82,7 +82,7 @@ void main() {
         whenListen(
           mockBloc,
           Stream.fromIterable([
-            TvSeriesDetailState(
+            const TvSeriesDetailState(
               isLoading: false,
               tvSeriesDetail: testTvSeriesDetail,
               recommendations: [],
@@ -90,7 +90,7 @@ void main() {
               watchlistMessage: 'Added to Watchlist',
             ),
           ]),
-          initialState: TvSeriesDetailState(
+          initialState: const TvSeriesDetailState(
             isLoading: false,
             tvSeriesDetail: testTvSeriesDetail,
             recommendations: [],
@@ -100,7 +100,7 @@ void main() {
         );
 
         // Act
-        await tester.pumpWidget(_makeTestableWidget(TvSeriesDetailPage(id: 1)));
+        await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
         await tester.pump(); // Trigger listener
 
         // Assert

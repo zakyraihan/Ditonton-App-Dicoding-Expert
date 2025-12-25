@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TopRatedTvSeriesPage extends StatefulWidget {
-  static const ROUTE_NAME = '/top-rated-tv-series';
+  static const routeName = '/top-rated-tv-series';
+
+  const TopRatedTvSeriesPage({super.key});
 
   @override
   _TopRatedTvSeriesPageState createState() => _TopRatedTvSeriesPageState();
@@ -24,14 +26,14 @@ class _TopRatedTvSeriesPageState extends State<TopRatedTvSeriesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Top Rated TV Series'),
+        title: const Text('Top Rated TV Series'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<TopRatedTvSeriesBloc, TopRatedTvSeriesState>(
           builder: (context, state) {
             if (state is TopRatedTvSeriesLoading) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             } else if (state is TopRatedTvSeriesHasData) {
@@ -44,11 +46,11 @@ class _TopRatedTvSeriesPageState extends State<TopRatedTvSeriesPage> {
               );
             } else if (state is TopRatedTvSeriesError) {
               return Center(
-                key: Key('error_message'),
+                key: const Key('error_message'),
                 child: Text(state.message),
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text('Failed'),
               );
             }
