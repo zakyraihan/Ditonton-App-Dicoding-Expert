@@ -9,7 +9,7 @@ import 'package:ditonton/presentation/bloc/tv_series/tv_series_search/tv_series_
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import '../../dummy_data/dummy_objects.dart';
+
 // Ini file yang akan digenerate, hiraukan merahnya dulu
 import 'tv_series_search_bloc_test.mocks.dart';
 

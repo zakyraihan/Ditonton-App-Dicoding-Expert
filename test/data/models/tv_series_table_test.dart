@@ -2,8 +2,6 @@ import 'package:ditonton/data/models/tv_series_table.dart';
 import 'package:ditonton/domain/entities/tv_series.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../dummy_data/dummy_objects.dart'; // Pastikan path ini benar
-
 void main() {
   final tTvSeriesTable = TvSeriesTable(
     id: 1,
