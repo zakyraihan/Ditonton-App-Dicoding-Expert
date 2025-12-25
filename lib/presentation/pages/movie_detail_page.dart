@@ -8,6 +8,7 @@ import 'package:ditonton/common/state_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class MovieDetailPage extends StatefulWidget {
   static const routeName = '/detail';
@@ -28,6 +29,15 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           .fetchMovieDetail(widget.id);
       Provider.of<MovieDetailNotifier>(context, listen: false)
           .loadWatchlistStatus(widget.id);
+
+      // Kriteria Expert: Custom Log Event saat halaman dibuka
+      FirebaseAnalytics.instance.logEvent(
+        name: 'view_movie_detail',
+        parameters: {
+          'item_id': widget.id.toString(),
+          'item_category': 'Movie',
+        },
+      );
     });
   }
 
@@ -108,25 +118,35 @@ class DetailContent extends StatelessWidget {
                             FilledButton(
                               onPressed: () async {
                                 if (!isAddedWatchlist) {
+                                  // Kriteria Expert: Custom Log Event saat tambah watchlist
+                                  await FirebaseAnalytics.instance.logEvent(
+                                    name: 'add_to_watchlist',
+                                    parameters: {
+                                      'item_id': movie.id.toString(),
+                                      'item_name': movie.title,
+                                      'item_category': 'Movie',
+                                    },
+                                  );
+
                                   await Provider.of<MovieDetailNotifier>(
-                                          context,
-                                          listen: false)
+                                      context,
+                                      listen: false)
                                       .addWatchlist(movie);
                                 } else {
                                   await Provider.of<MovieDetailNotifier>(
-                                          context,
-                                          listen: false)
+                                      context,
+                                      listen: false)
                                       .removeFromWatchlist(movie);
                                 }
 
                                 final message =
                                     Provider.of<MovieDetailNotifier>(context,
-                                            listen: false)
+                                        listen: false)
                                         .watchlistMessage;
 
                                 if (message ==
-                                        MovieDetailNotifier
-                                            .watchlistAddSuccessMessage ||
+                                    MovieDetailNotifier
+                                        .watchlistAddSuccessMessage ||
                                     message ==
                                         MovieDetailNotifier
                                             .watchlistRemoveSuccessMessage) {
@@ -219,15 +239,15 @@ class DetailContent extends StatelessWidget {
                                               ),
                                               child: CachedNetworkImage(
                                                 imageUrl:
-                                                    'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                                                'https://image.tmdb.org/t/p/w500${movie.posterPath}',
                                                 placeholder: (context, url) =>
-                                                    const Center(
+                                                const Center(
                                                   child:
-                                                      CircularProgressIndicator(),
+                                                  CircularProgressIndicator(),
                                                 ),
                                                 errorWidget:
                                                     (context, url, error) =>
-                                                        const Icon(Icons.error),
+                                                const Icon(Icons.error),
                                               ),
                                             ),
                                           ),
@@ -257,9 +277,7 @@ class DetailContent extends StatelessWidget {
                 ),
               );
             },
-            // initialChildSize: 0.5,
             minChildSize: 0.25,
-            // maxChildSize: 1.0,
           ),
         ),
         Padding(
@@ -284,18 +302,13 @@ class DetailContent extends StatelessWidget {
     for (var genre in genres) {
       result += '${genre.name}, ';
     }
-
-    if (result.isEmpty) {
-      return result;
-    }
-
+    if (result.isEmpty) return result;
     return result.substring(0, result.length - 2);
   }
 
   String _showDuration(int runtime) {
     final int hours = runtime ~/ 60;
     final int minutes = runtime % 60;
-
     if (hours > 0) {
       return '${hours}h ${minutes}m';
     } else {

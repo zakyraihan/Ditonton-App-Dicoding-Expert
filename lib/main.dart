@@ -31,12 +31,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:ditonton/injection.dart' as di;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'common/ssl_pinning_client.dart';
 
 void main() async {
   GoogleFonts.config.allowRuntimeFetching = true;
   await SslPinningClient.init();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Pass all uncaught errors from the framework to Crashlytics.`
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
   di.init();
   runApp(const MyApp());
 }
@@ -77,7 +89,10 @@ class MyApp extends StatelessWidget {
           drawerTheme: kDrawerTheme,
         ),
         home: const HomeMoviePage(),
-        navigatorObservers: [routeObserver],
+        navigatorObservers: [
+          routeObserver,
+          FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+        ],
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {
             case '/home':

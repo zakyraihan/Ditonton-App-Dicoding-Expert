@@ -178,5 +178,4 @@ void init() {
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
 
-  // external
 }
