@@ -30,14 +30,18 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
       Provider.of<MovieDetailNotifier>(context, listen: false)
           .loadWatchlistStatus(widget.id);
 
-      // Kriteria Expert: Custom Log Event saat halaman dibuka
-      FirebaseAnalytics.instance.logEvent(
-        name: 'view_movie_detail',
-        parameters: {
-          'item_id': widget.id.toString(),
-          'item_category': 'Movie',
-        },
-      );
+      // Custom Log Event dengan Try-Catch agar tidak merusak Widget Test
+      try {
+        FirebaseAnalytics.instance.logEvent(
+          name: 'view_movie_detail',
+          parameters: {
+            'item_id': widget.id.toString(),
+            'item_category': 'Movie',
+          },
+        );
+      } catch (e) {
+        debugPrint("Firebase Analytics not initialized: $e");
+      }
     });
   }
 
@@ -97,11 +101,7 @@ class DetailContent extends StatelessWidget {
                   color: kRichBlack,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  top: 16,
-                  right: 16,
-                ),
+                padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
                 child: Stack(
                   children: [
                     Container(
@@ -111,22 +111,23 @@ class DetailContent extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              movie.title,
-                              style: kHeading5,
-                            ),
+                            Text(movie.title, style: kHeading5),
                             FilledButton(
                               onPressed: () async {
                                 if (!isAddedWatchlist) {
-                                  // Kriteria Expert: Custom Log Event saat tambah watchlist
-                                  await FirebaseAnalytics.instance.logEvent(
-                                    name: 'add_to_watchlist',
-                                    parameters: {
-                                      'item_id': movie.id.toString(),
-                                      'item_name': movie.title,
-                                      'item_category': 'Movie',
-                                    },
-                                  );
+                                  // Custom Log Event saat Klik Watchlist
+                                  try {
+                                    await FirebaseAnalytics.instance.logEvent(
+                                      name: 'add_to_watchlist',
+                                      parameters: {
+                                        'item_id': movie.id.toString(),
+                                        'item_name': movie.title,
+                                        'item_category': 'Movie',
+                                      },
+                                    );
+                                  } catch (e) {
+                                    debugPrint("Firebase Analytics failed: $e");
+                                  }
 
                                   await Provider.of<MovieDetailNotifier>(
                                       context,
@@ -144,12 +145,8 @@ class DetailContent extends StatelessWidget {
                                         listen: false)
                                         .watchlistMessage;
 
-                                if (message ==
-                                    MovieDetailNotifier
-                                        .watchlistAddSuccessMessage ||
-                                    message ==
-                                        MovieDetailNotifier
-                                            .watchlistRemoveSuccessMessage) {
+                                if (message == MovieDetailNotifier.watchlistAddSuccessMessage ||
+                                    message == MovieDetailNotifier.watchlistRemoveSuccessMessage) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text(message)));
                                 } else {
@@ -172,12 +169,8 @@ class DetailContent extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Text(
-                              _showGenres(movie.genres),
-                            ),
-                            Text(
-                              _showDuration(movie.runtime),
-                            ),
+                            Text(_showGenres(movie.genres)),
+                            Text(_showDuration(movie.runtime)),
                             Row(
                               children: [
                                 RatingBarIndicator(
@@ -193,30 +186,17 @@ class DetailContent extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            Text(
-                              'Overview',
-                              style: kHeading6,
-                            ),
-                            Text(
-                              movie.overview,
-                            ),
+                            Text('Overview', style: kHeading6),
+                            Text(movie.overview),
                             const SizedBox(height: 16),
-                            Text(
-                              'Recommendations',
-                              style: kHeading6,
-                            ),
+                            Text('Recommendations', style: kHeading6),
                             Consumer<MovieDetailNotifier>(
                               builder: (context, data, child) {
-                                if (data.recommendationState ==
-                                    RequestState.loading) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (data.recommendationState ==
-                                    RequestState.error) {
+                                if (data.recommendationState == RequestState.loading) {
+                                  return const Center(child: CircularProgressIndicator());
+                                } else if (data.recommendationState == RequestState.error) {
                                   return Text(data.message);
-                                } else if (data.recommendationState ==
-                                    RequestState.loaded) {
+                                } else if (data.recommendationState == RequestState.loaded) {
                                   return SizedBox(
                                     height: 150,
                                     child: ListView.builder(
@@ -234,20 +214,11 @@ class DetailContent extends StatelessWidget {
                                               );
                                             },
                                             child: ClipRRect(
-                                              borderRadius: const BorderRadius.all(
-                                                Radius.circular(8),
-                                              ),
+                                              borderRadius: const BorderRadius.all(Radius.circular(8)),
                                               child: CachedNetworkImage(
-                                                imageUrl:
-                                                'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-                                                placeholder: (context, url) =>
-                                                const Center(
-                                                  child:
-                                                  CircularProgressIndicator(),
-                                                ),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                const Icon(Icons.error),
+                                                imageUrl: 'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                                                placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                                errorWidget: (context, url, error) => const Icon(Icons.error),
                                               ),
                                             ),
                                           ),
@@ -287,9 +258,7 @@ class DetailContent extends StatelessWidget {
             foregroundColor: Colors.white,
             child: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
             ),
           ),
         )
@@ -309,10 +278,6 @@ class DetailContent extends StatelessWidget {
   String _showDuration(int runtime) {
     final int hours = runtime ~/ 60;
     final int minutes = runtime % 60;
-    if (hours > 0) {
-      return '${hours}h ${minutes}m';
-    } else {
-      return '${minutes}m';
-    }
+    return hours > 0 ? '${hours}h ${minutes}m' : '${minutes}m';
   }
 }

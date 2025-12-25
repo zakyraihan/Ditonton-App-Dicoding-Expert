@@ -39,7 +39,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'common/ssl_pinning_client.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   GoogleFonts.config.allowRuntimeFetching = true;
+
   await SslPinningClient.init();
 
   await Firebase.initializeApp(
@@ -48,6 +51,7 @@ void main() async {
 
   // Pass all uncaught errors from the framework to Crashlytics.`
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
 
   di.init();
   runApp(const MyApp());
