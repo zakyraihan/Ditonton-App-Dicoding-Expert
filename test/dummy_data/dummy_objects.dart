@@ -6,6 +6,8 @@ import 'package:ditonton/domain/entities/movie_detail.dart';
 import 'package:ditonton/domain/entities/tv_series.dart';
 import 'package:ditonton/domain/entities/tv_series_detail.dart';
 
+// --- Movie Section ---
+
 const testMovie = Movie(
   adult: false,
   backdropPath: '/muth4OYamXf41G2evdrLEg8d3om.jpg',
@@ -13,7 +15,7 @@ const testMovie = Movie(
   id: 557,
   originalTitle: 'Spider-Man',
   overview:
-      'After being bitten by a genetically altered spider, nerdy high school student Peter Parker is endowed with amazing powers to become the Amazing superhero known as Spider-Man.',
+  'After being bitten by a genetically altered spider, nerdy high school student Peter Parker is endowed with amazing powers to become the Amazing superhero known as Spider-Man.',
   popularity: 60.441,
   posterPath: '/rweIrveL43TaxUN0akQEaAXL6x0.jpg',
   releaseDate: '2002-05-01',
@@ -61,6 +63,24 @@ final testMovieMap = {
   'title': 'title',
 };
 
+// --- TV Series Section ---
+
+const testTvSeries = TvSeries(
+  backdropPath: 'backdropPath',
+  genreIds: [1],
+  id: 1,
+  originalName: 'originalName',
+  overview: 'overview',
+  popularity: 1.0,
+  posterPath: 'posterPath',
+  firstAirDate: '2024-01-01',
+  name: 'name',
+  voteAverage: 1.0,
+  voteCount: 1,
+);
+
+final testTvSeriesList = <TvSeries>[testTvSeries];
+
 const testTvSeriesDetail = TvSeriesDetail(
   backdropPath: 'backdropPath',
   episodeRunTime: [60],
@@ -76,21 +96,14 @@ const testTvSeriesDetail = TvSeriesDetail(
   numberOfSeasons: 1,
 );
 
-final testTvSeriesList = <TvSeries>[
-  const TvSeries(
-    backdropPath: 'backdropPath',
-    genreIds: [1],
-    id: 1,
-    originalName: 'originalName',
-    overview: 'overview',
-    popularity: 1.0,
-    posterPath: 'posterPath',
-    firstAirDate: '2024-01-01',
-    name: 'name',
-    voteAverage: 1.0,
-    voteCount: 1,
-  ),
-];
+const testWatchlistTvSeries = [testTvSeries];
+
+const testTvWatchlist = TvSeries.watchlist(
+  id: 1,
+  name: 'name',
+  posterPath: 'posterPath',
+  overview: 'overview',
+);
 
 const testTvSeriesTable = TvSeriesTable(
   id: 1,

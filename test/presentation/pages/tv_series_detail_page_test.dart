@@ -20,7 +20,6 @@ void main() {
     mockBloc = MockTvSeriesDetailBloc();
   });
 
-  // Helper untuk membungkus widget dengan Provider yang dibutuhkan
   Widget makeTestableWidget(Widget body) {
     return BlocProvider<TvSeriesDetailBloc>.value(
       value: mockBloc,
@@ -31,19 +30,40 @@ void main() {
   }
 
   testWidgets('Page should display progress bar when loading', (WidgetTester tester) async {
-    // Arrange
     when(() => mockBloc.state).thenReturn(const TvSeriesDetailState(isLoading: true));
 
-    // Act
     await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
 
-    // Assert
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('Watchlist button should display add icon when TV series is not added to watchlist',
+  testWidgets('Should display No recommendations text when recommendations are empty',
           (WidgetTester tester) async {
         // Arrange
+        when(() => mockBloc.state).thenReturn(const TvSeriesDetailState(
+          isLoading: false,
+          tvSeriesDetail: testTvSeriesDetail,
+          recommendations: [], // State kosong
+          isAddedToWatchlist: false,
+          message: 'Recommendation Error',
+        ));
+
+        // Act
+        await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
+
+        // Taktik: Drag DraggableScrollableSheet agar bagian bawah terlihat
+        final scrollableFinder = find.byType(Scrollable).first;
+        await tester.drag(scrollableFinder, const Offset(0, -500));
+
+        await tester.pump();
+
+        // Assert
+        // Kita mencari 'No recommendations' karena itulah yang tertulis di UI kamu jika list kosong
+        expect(find.text('No recommendations'), findsOneWidget);
+      });
+
+  testWidgets('Watchlist button should display add icon when not added to watchlist',
+          (WidgetTester tester) async {
         when(() => mockBloc.state).thenReturn(const TvSeriesDetailState(
           isLoading: false,
           tvSeriesDetail: testTvSeriesDetail,
@@ -51,16 +71,17 @@ void main() {
           isAddedToWatchlist: false,
         ));
 
-        // Act
         await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
 
-        // Assert
+        final scrollableFinder = find.byType(Scrollable).first;
+        await tester.drag(scrollableFinder, const Offset(0, -500));
+        await tester.pump();
+
         expect(find.byIcon(Icons.add), findsOneWidget);
       });
 
-  testWidgets('Watchlist button should display check icon when TV series is added to watchlist',
+  testWidgets('Watchlist button should display check icon when added to watchlist',
           (WidgetTester tester) async {
-        // Arrange
         when(() => mockBloc.state).thenReturn(const TvSeriesDetailState(
           isLoading: false,
           tvSeriesDetail: testTvSeriesDetail,
@@ -68,17 +89,17 @@ void main() {
           isAddedToWatchlist: true,
         ));
 
-        // Act
         await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
 
-        // Assert
+        final scrollableFinder = find.byType(Scrollable).first;
+        await tester.drag(scrollableFinder, const Offset(0, -500));
+        await tester.pump();
+
         expect(find.byIcon(Icons.check), findsOneWidget);
       });
 
   testWidgets('Watchlist button should display Snackbar when added to watchlist',
           (WidgetTester tester) async {
-        // Arrange
-        // Simulasi state transisi dari pesan kosong ke pesan sukses
         whenListen(
           mockBloc,
           Stream.fromIterable([
@@ -99,11 +120,9 @@ void main() {
           ),
         );
 
-        // Act
         await tester.pumpWidget(makeTestableWidget(const TvSeriesDetailPage(id: 1)));
-        await tester.pump(); // Trigger listener
+        await tester.pump();
 
-        // Assert
         expect(find.byType(SnackBar), findsOneWidget);
         expect(find.text('Added to Watchlist'), findsOneWidget);
       });

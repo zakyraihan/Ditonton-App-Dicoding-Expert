@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:ditonton/common/exception.dart';
 import 'package:ditonton/common/failure.dart';
@@ -60,27 +61,41 @@ void main() {
   group('On The Air TV Series', () {
     test('should return remote data when call to remote data source is success',
             () async {
-          // arrange
           when(mockRemoteDataSource.getOnTheAirTvSeries())
               .thenAnswer((_) async => tTvModelList);
-          // act
           final result = await repository.getOnTheAirTvSeries();
-          // assert
           verify(mockRemoteDataSource.getOnTheAirTvSeries());
           final resultList = result.getOrElse(() => []);
           expect(resultList, tTvList);
         });
 
-    test('should return server failure when call to remote data source is fail',
+    test('should return SSL failure when certificate is invalid', () async {
+      when(mockRemoteDataSource.getOnTheAirTvSeries())
+          .thenThrow(const TlsException());
+      final result = await repository.getOnTheAirTvSeries();
+      expect(result, equals(const Left(SSLFailure('Certificate Not Valid'))));
+    });
+  });
+
+  group('Popular TV Series', () {
+    test('should return remote data when call to remote data source is success',
             () async {
-          // arrange
-          when(mockRemoteDataSource.getOnTheAirTvSeries())
-              .thenThrow(ServerException());
-          // act
-          final result = await repository.getOnTheAirTvSeries();
-          // assert
-          verify(mockRemoteDataSource.getOnTheAirTvSeries());
-          expect(result, equals(const Left(ServerFailure(''))));
+          when(mockRemoteDataSource.getPopularTvSeries())
+              .thenAnswer((_) async => tTvModelList);
+          final result = await repository.getPopularTvSeries();
+          final resultList = result.getOrElse(() => []);
+          expect(resultList, tTvList);
+        });
+  });
+
+  group('Top Rated TV Series', () {
+    test('should return remote data when call to remote data source is success',
+            () async {
+          when(mockRemoteDataSource.getTopRatedTvSeries())
+              .thenAnswer((_) async => tTvModelList);
+          final result = await repository.getTopRatedTvSeries();
+          final resultList = result.getOrElse(() => []);
+          expect(resultList, tTvList);
         });
   });
 
@@ -101,53 +116,66 @@ void main() {
       voteCount: 1,
     );
 
-    test('should return TV Series data when call to remote source is success',
-            () async {
-          // arrange
-          when(mockRemoteDataSource.getTvSeriesDetail(tId))
-              .thenAnswer((_) async => tTvResponse);
-          // act
-          final result = await repository.getTvSeriesDetail(tId);
-          // assert
-          verify(mockRemoteDataSource.getTvSeriesDetail(tId));
-          expect(result, equals(const Right(testTvSeriesDetail)));
-        });
+    test('should return TV Series data when call is success', () async {
+      when(mockRemoteDataSource.getTvSeriesDetail(tId))
+          .thenAnswer((_) async => tTvResponse);
+      final result = await repository.getTvSeriesDetail(tId);
+      expect(result, equals(const Right(testTvSeriesDetail)));
+    });
+
+    test('should return SSL failure when certificate is invalid', () async {
+      when(mockRemoteDataSource.getTvSeriesDetail(tId))
+          .thenThrow(const TlsException());
+      final result = await repository.getTvSeriesDetail(tId);
+      expect(result, equals(const Left(SSLFailure('Certificate Not Valid'))));
+    });
   });
 
   group('save watchlist', () {
     test('should return success message when saving successful', () async {
-      // arrange
       when(mockLocalDataSource.insertWatchlist(testTvSeriesTable))
           .thenAnswer((_) async => 'Added to Watchlist');
-      // act
       final result = await repository.saveWatchlist(testTvSeriesDetail);
-      // assert
       expect(result, const Right('Added to Watchlist'));
+    });
+
+    test('should return DatabaseFailure when saving failed', () async {
+      when(mockLocalDataSource.insertWatchlist(testTvSeriesTable))
+          .thenThrow(DatabaseException('Failed'));
+      final result = await repository.saveWatchlist(testTvSeriesDetail);
+      expect(result, const Left(DatabaseFailure('Failed')));
     });
   });
 
   group('remove watchlist', () {
     test('should return success message when remove successful', () async {
-      // arrange
       when(mockLocalDataSource.removeWatchlist(testTvSeriesTable))
           .thenAnswer((_) async => 'Removed from watchlist');
-      // act
       final result = await repository.removeWatchlist(testTvSeriesDetail);
-      // assert
       expect(result, const Right('Removed from watchlist'));
     });
   });
 
   group('get watchlist status', () {
     test('should return watch status whether data is found', () async {
-      // arrange
       const tId = 1;
       when(mockLocalDataSource.getTvSeriesById(tId))
           .thenAnswer((_) async => null);
-      // act
       final result = await repository.isAddedToWatchlist(tId);
-      // assert
       expect(result, false);
+    });
+  });
+
+  group('get watchlist TV series', () {
+    test('should return list of TV Series from local data source', () async {
+      when(mockLocalDataSource.getWatchlistTvSeries())
+          .thenAnswer((_) async => [testTvSeriesTable]);
+
+      final result = await repository.getWatchlistTvSeries();
+
+      final resultList = result.getOrElse(() => []);
+
+      expect(resultList, [testTvWatchlist]);
     });
   });
 }

@@ -1,26 +1,30 @@
-import 'package:ditonton/common/state_enum.dart';
-import 'package:ditonton/domain/entities/movie.dart';
+import 'package:bloc_test/bloc_test.dart';
+import 'package:ditonton/presentation/bloc/movie/top_rated_movies/top_rated_movies_bloc.dart';
+import 'package:ditonton/presentation/bloc/movie/top_rated_movies/top_rated_movies_event.dart';
+import 'package:ditonton/presentation/bloc/movie/top_rated_movies/top_rated_movies_state.dart';
 import 'package:ditonton/presentation/pages/top_rated_movies_page.dart';
-import 'package:ditonton/presentation/provider/top_rated_movies_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'top_rated_movies_page_test.mocks.dart';
+import '../../dummy_data/dummy_objects.dart';
 
-@GenerateMocks([TopRatedMoviesNotifier])
+// Mocking Bloc menggunakan Mocktail
+class MockTopRatedMoviesBloc
+    extends MockBloc<TopRatedMoviesEvent, TopRatedMoviesState>
+    implements TopRatedMoviesBloc {}
+
 void main() {
-  late MockTopRatedMoviesNotifier mockNotifier;
+  late MockTopRatedMoviesBloc mockBloc;
 
   setUp(() {
-    mockNotifier = MockTopRatedMoviesNotifier();
+    mockBloc = MockTopRatedMoviesBloc();
   });
 
   Widget makeTestableWidget(Widget body) {
-    return ChangeNotifierProvider<TopRatedMoviesNotifier>.value(
-      value: mockNotifier,
+    return BlocProvider<TopRatedMoviesBloc>.value(
+      value: mockBloc,
       child: MaterialApp(
         home: body,
       ),
@@ -28,39 +32,40 @@ void main() {
   }
 
   testWidgets('Page should display progress bar when loading',
-      (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.loading);
+          (WidgetTester tester) async {
+        // Arrange
+        when(() => mockBloc.state).thenReturn(TopRatedMoviesLoading());
 
-    final progressFinder = find.byType(CircularProgressIndicator);
-    final centerFinder = find.byType(Center);
+        // Act
+        await tester.pumpWidget(makeTestableWidget(const TopRatedMoviesPage()));
 
-    await tester.pumpWidget(makeTestableWidget(const TopRatedMoviesPage()));
+        // Assert
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        expect(find.byType(Center), findsOneWidget);
+      });
 
-    expect(centerFinder, findsOneWidget);
-    expect(progressFinder, findsOneWidget);
-  });
+  testWidgets('Page should display ListView when data is loaded',
+          (WidgetTester tester) async {
+        // Arrange
+        when(() => mockBloc.state).thenReturn(TopRatedMoviesHasData(testMovieList));
 
-  testWidgets('Page should display when data is loaded',
-      (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.loaded);
-    when(mockNotifier.movies).thenReturn(<Movie>[]);
+        // Act
+        await tester.pumpWidget(makeTestableWidget(const TopRatedMoviesPage()));
 
-    final listViewFinder = find.byType(ListView);
-
-    await tester.pumpWidget(makeTestableWidget(const TopRatedMoviesPage()));
-
-    expect(listViewFinder, findsOneWidget);
-  });
+        // Assert
+        expect(find.byType(ListView), findsOneWidget);
+      });
 
   testWidgets('Page should display text with message when Error',
-      (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.error);
-    when(mockNotifier.message).thenReturn('Error message');
+          (WidgetTester tester) async {
+        // Arrange
+        when(() => mockBloc.state).thenReturn(TopRatedMoviesError('Error message'));
 
-    final textFinder = find.byKey(const Key('error_message'));
+        // Act
+        await tester.pumpWidget(makeTestableWidget(const TopRatedMoviesPage()));
 
-    await tester.pumpWidget(makeTestableWidget(const TopRatedMoviesPage()));
-
-    expect(textFinder, findsOneWidget);
-  });
+        // Assert
+        expect(find.byKey(const Key('error_message')), findsOneWidget);
+        expect(find.text('Error message'), findsOneWidget);
+      });
 }

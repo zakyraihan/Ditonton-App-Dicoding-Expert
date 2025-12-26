@@ -28,6 +28,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException { // Tambahkan ini untuk SSL Pinning
+      return const Left(SSLFailure('Certificate Not Valid'));
     }
   }
 
@@ -40,6 +42,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException { // Tambahkan ini
+      return const Left(SSLFailure('Certificate Not Valid'));
     }
   }
 
@@ -52,6 +56,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException { // Tambahkan ini
+      return const Left(SSLFailure('Certificate Not Valid'));
     }
   }
 
@@ -64,6 +70,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException { // Tambahkan ini
+      return const Left(SSLFailure('Certificate Not Valid'));
     }
   }
 
@@ -76,6 +84,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException { // Tambahkan ini
+      return const Left(SSLFailure('Certificate Not Valid'));
     }
   }
 
@@ -88,6 +98,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
+    } on TlsException { // Tambahkan ini
+      return const Left(SSLFailure('Certificate Not Valid'));
     }
   }
 
@@ -95,7 +107,7 @@ class MovieRepositoryImpl implements MovieRepository {
   Future<Either<Failure, String>> saveWatchlist(MovieDetail movie) async {
     try {
       final result =
-          await localDataSource.insertWatchlist(MovieTable.fromEntity(movie));
+      await localDataSource.insertWatchlist(MovieTable.fromEntity(movie));
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));
@@ -108,7 +120,7 @@ class MovieRepositoryImpl implements MovieRepository {
   Future<Either<Failure, String>> removeWatchlist(MovieDetail movie) async {
     try {
       final result =
-          await localDataSource.removeWatchlist(MovieTable.fromEntity(movie));
+      await localDataSource.removeWatchlist(MovieTable.fromEntity(movie));
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));
